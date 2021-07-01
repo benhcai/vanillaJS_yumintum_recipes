@@ -1,0 +1,25 @@
+require("core-js/stable");
+require("regenerator-runtime/runtime");
+var _model = require("./model");
+var _viewsViewRecipe = require("./views/viewRecipe");
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _viewsViewRecipeDefault = _parcelHelpers.interopDefault(_viewsViewRecipe);
+const recipeContainer = document.querySelector(".recipe");
+const controlRecipes = async function () {
+  try {
+    // Get URL id
+    const id = window.location.hash.slice(1);
+    if (!id) throw new Error("ID not found");
+    // 0. Recipe loading spinner
+    _viewsViewRecipeDefault.default.renderSpinner();
+    // 1. Load recipe
+    let myrecipe = await _model.getRecipe(id);
+    // 2. Render recipe
+    _viewsViewRecipeDefault.default.render(myrecipe);
+  } catch (err) {
+    console.log(err);
+  }
+};
+["hashchange", "load"].forEach(ev => {
+  return window.addEventListener(ev, controlRecipes);
+});

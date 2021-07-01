@@ -1,0 +1,36 @@
+require("url:../img/icons.svg");
+require("core-js/stable");
+require("regenerator-runtime/runtime");
+var _helper = require("./helper");
+var _viewRecipe = require("./viewRecipe");
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _viewRecipeDefault = _parcelHelpers.interopDefault(_viewRecipe);
+const recipeContainer = document.querySelector(".recipe");
+const showRecipe = async function () {
+  try {
+    const id = window.location.hash.slice(1);
+    if (!id) throw new Error("ID not found");
+    _helper.renderSpinner(recipeContainer);
+    // 1. Loading recipe
+    let {recipe} = await _helper.getRecipe(id);
+    let myrecipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      image: recipe.image_url,
+      ingredients: recipe.ingredients,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time
+    };
+    let markup = _viewRecipeDefault.default.render(myrecipe);
+    _helper.clearThenInsert(markup, recipeContainer, "afterbegin");
+    recipeContainer.innerHTML = "";
+    recipeContainer.insertAdjacentHTML("afterbegin", markup);
+  } catch (err) {
+    console.log(err);
+  }
+};
+["hashchange", "load"].forEach(ev => {
+  return window.addEventListener(ev, showRecipe);
+});

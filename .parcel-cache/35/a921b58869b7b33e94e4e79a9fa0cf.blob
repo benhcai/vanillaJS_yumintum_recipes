@@ -1,0 +1,37 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "clearThenInsert", function () {
+  return clearThenInsert;
+});
+_parcelHelpers.export(exports, "renderSpinner", function () {
+  return renderSpinner;
+});
+_parcelHelpers.export(exports, "getRecipe", function () {
+  return getRecipe;
+});
+var _urlImgIconsSvg = require("url:../img/icons.svg");
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+const clearThenInsert = function (markup, element, position) {
+  element.innerHTML = "";
+  element.insertAdjacentHTML(position, markup);
+};
+const renderSpinner = function () {
+  const markup = `
+      <div class="spinner">
+          <svg>
+          <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
+          </svg>
+      </div>
+      `;
+  return markup;
+};
+const getRecipe = async function (url) {
+  try {
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${url}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(`${data.message} ${res.status}`);
+    return data.data;
+  } catch (err) {
+    throw err;
+  }
+};
