@@ -1,0 +1,11 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API_URL", ()=>API_URL
+);
+parcelHelpers.export(exports, "TIMOUT_SEC", ()=>TIMOUT_SEC
+);
+// Files that are constant and will be reused across the app
+// Defining important data about the app
+// All caps for contants
+const API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes";
+const TIMOUT_SEC = 10000;

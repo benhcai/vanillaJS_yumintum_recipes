@@ -1,33 +1,24 @@
-// import icons from '../img/icons.svg' // Parcel 1
-import icons from "url:../../img/icons.svg"; // Parcel 2: for static assets
+import View from "./View";
+import { Fraction } from "fractional";
 
-class RecipeView {
+class ViewRecipe extends View {
   _parentElement = document.querySelector(".recipe");
-  _data;
+  _errorMessage =
+    "The recipe was not found. It may have been moved or deleted, please try a different URL address.";
+  _successMessage = "success!";
 
-  renderSpinner = function () {
-    const markup = `
-        <div class="spinner">
-            <svg>
-            <use href="${icons}#icon-loader"></use>
-            </svg>
-        </div>
-        `;
-    this._clearThenInsert(markup, this._parentElement, "afterbegin");
-  };
-
-  render(data) {
-    this._data = data;
-    let markup = this._generateMarkup();
-    this._clearThenInsert(markup, this._parentElement, "afterbegin");
+  // R2. Publish: hashchange occured or load occured event.
+  addHandlerRender(handler) {
+    ["hashchange", "load"].forEach((ev) => {
+      return window.addEventListener(ev, handler);
+    });
   }
 
-  _clearThenInsert = function (markup, element, position) {
-    element.innerHTML = "";
-    element.insertAdjacentHTML(position, markup);
-  };
+  // R6. Render document (markup) inside this view component
+  // inherited render(data)
 
   _generateMarkup() {
+    console.log(this._data.ingredients);
     return `
     <figure class="recipe__fig">
       <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
@@ -39,14 +30,14 @@ class RecipeView {
     <div class="recipe__details">
       <div class="recipe__info">
         <svg class="recipe__info-icon">
-          <use href="${icons}#icon-clock"></use>
+          <use href="${this.icons}#icon-clock"></use>
         </svg>
         <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
         <span class="recipe__info-text">minutes</span>
       </div>
       <div class="recipe__info">
         <svg class="recipe__info-icon">
-          <use href="${icons}#icon-users"></use>
+          <use href="${this.icons}#icon-users"></use>
         </svg>
         <span class="recipe__info-data recipe__info-data--people">${this._data.servings} </span>
         <span class="recipe__info-text">SERVINGS</span>
@@ -54,33 +45,36 @@ class RecipeView {
         <div class="recipe__info-buttons">
           <button class="btn--tiny btn--increase-servings">
             <svg>
-              <use href="${icons}#icon-minus-circle"></use>
+              <use href="${this.icons}#icon-minus-circle"></use>
             </svg>
           </button>
           <button class="btn--tiny btn--increase-servings">
             <svg>
-              <use href="${icons}#icon-plus-circle"></use>
+              <use href="${this.icons}#icon-plus-circle"></use>
             </svg>
           </button>
         </div>
       </div>
 
+      
       <div class="recipe__user-generated">
+      <!--
         <svg>
-          <use href="${icons}#icon-user"></use>
+          <use href="${this.icons}#icon-user"></use>
         </svg>
+        -->
       </div>
       <button class="btn--round">
         <svg class="">
-          <use href="${icons}#icon-bookmark-fill"></use>
+          <use href="${this.icons}#icon-bookmark-fill"></use>
         </svg>
       </button>
     </div>
 
     <div class="recipe__ingredients">
-        <h2 class="heading--2">RecipeView ingredients</h2>
+        <h2 class="heading--2">RecipeView ingredients}</h2>
         <ul class="recipe__ingredient-list">
-        ${this.iterateIngredients()}
+        ${this._data.ingredients.map((ing) => this._generateIngredients(ing)).join("")}
         </ul>
     </div>
 
@@ -98,31 +92,29 @@ class RecipeView {
       >
         <span>Directions</span>
         <svg class="search__icon">
-          <use href="${icons}#icon-arrow-right"></use>
+          <use href="${this.icons}#icon-arrow-right"></use>
         </svg>
       </a>
     </div>
     `;
   }
 
-  iterateIngredients() {
-    return `${this._data.ingredients
-      .map(
-        (ing) => `
-          <li class="recipe__ingredient">
-          <svg class="recipe__icon">
-              <use href="${icons}#icon-check"></use>
-          </svg>
-          <div class="recipe__quantity">${ing.quantity ? ing.quantity : ""}</div>
-          <div class="recipe__description">
-              <span class="recipe__unit">${ing.unit}</span>
-              ${ing.description}
-          </div>
-          </li>
-          `
-      )
-      .join("")}`;
+  _generateIngredients(ing) {
+    return `
+      <li class="recipe__ingredient">
+      <svg class="recipe__icon">
+          <use href="${this.icons}#icon-check"></use>
+      </svg>
+      <div class="recipe__quantity">
+        ${ing.quantity ? new Fraction(ing.quantity.toFixed(1)) : ""}
+      </div>
+      <div class="recipe__description">
+          <span class="recipe__unit">${ing.unit}</span>
+          ${ing.description}
+      </div>
+      </li>
+      `;
   }
 }
 
-export default new RecipeView();
+export default new ViewRecipe();

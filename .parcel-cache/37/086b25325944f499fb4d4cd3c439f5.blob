@@ -1,0 +1,31 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON
+);
+// For functions used many times
+const timeout = function(s) {
+    return new Promise(function(_, reject) {
+        setTimeout(function() {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+};
+// getJSON and Error handling
+const getJSON = async function(url) {
+    try {
+        // const timeoutPromsie = timeout(10);
+        const res = await Promise.race([
+            timeoutPromsie,
+            fetch(url)
+        ]);
+        console.log("res: ", res);
+        const data = await res.json();
+        // Check for valid url
+        if (!res.ok) throw new Error(`💥 !res.ok - ${data.message} ${res.status}`);
+        // Destructure for recipe object and return
+        return data.data.recipe;
+    } catch (err) {
+        console.error("catched: ", err);
+    // throw err;
+    }
+};

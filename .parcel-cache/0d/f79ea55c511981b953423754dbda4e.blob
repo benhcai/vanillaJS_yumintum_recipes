@@ -1,0 +1,43 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "state", ()=>state
+);
+parcelHelpers.export(exports, "getRecipe", ()=>getRecipe
+);
+parcelHelpers.export(exports, "loadSearchResults", ()=>loadSearchResults
+);
+var _config = require("./config");
+var _helper = require("./helper");
+const state = {
+    recipe: {
+    }
+};
+const getRecipe = async function(url) {
+    try {
+        // Fetch recipes based on url function parameter
+        const data = await _helper.getJSON(`${_config.API_URL}${url}`);
+        console.log(data);
+        // Create new object with new keys
+        state.myrecipe = {
+            id: data.id,
+            title: data.title,
+            publisher: data.publisher,
+            sourceUrl: data.source_url,
+            image: data.image_url,
+            ingredients: data.ingredients,
+            servings: data.servings,
+            cookingTime: data.cooking_time
+        };
+        return state.myrecipe;
+    } catch (err) {
+        console.log("model: ", err);
+        throw err;
+    }
+};
+const loadSearchResults = async function() {
+    const recipes = await _helper.getJSON("https://forkify-api.herokuapp.com/api/v2/recipes?search=pizza");
+    console.log({
+        recipes
+    });
+};
+loadSearchResults();

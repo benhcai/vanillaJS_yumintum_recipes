@@ -1,0 +1,44 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _stable = require("core-js/stable");
+var _runtime = require("regenerator-runtime/runtime");
+var _model = require("./model");
+var _viewRecipe = require("./views/viewRecipe");
+var _viewRecipeDefault = parcelHelpers.interopDefault(_viewRecipe);
+var _viewSearch = require("./views/viewSearch");
+var _viewSearchDefault = parcelHelpers.interopDefault(_viewSearch);
+const controlRecipes = async function() {
+    try {
+        // Get URL id
+        const id = window.location.hash.slice(1);
+        if (!id) throw new Error("ID not found");
+        // 0. Recipe loading spinner
+        _viewRecipeDefault.default.renderSpinner();
+        // 1. Load recipe
+        let myrecipe = await _model.getRecipe(id);
+        // 2. Render recipe
+        _viewRecipeDefault.default.render(myrecipe); // could instead use model.state.myrecipe and remove return from model
+    } catch (err) {
+        console.log(err);
+        _viewRecipeDefault.default.renderError();
+    }
+};
+const controlSearchResults = async function() {
+    try {
+        // 1) Get search query
+        const query = _viewSearchDefault.default.getQuery(); // S3. controlSearchResult gets the event data (input)
+        if (!query) return;
+        // 2) Load search results
+        await _model.loadSearchResults(query);
+        console.log(_model.state.search); // S5. Send to View to handle retrieved data
+    } catch (err) {
+        console.log("controlSearch", err);
+    }
+};
+const init = function() {
+    console.clear();
+    console.log("console msg inti");
+    _viewRecipeDefault.default.addHandlerRender(controlRecipes); // controlRecipes subscribes to ViewRecipe
+    _viewSearchDefault.default.addHandlerSearch(controlSearchResults); // S1. controlSearchResult subscribes to ViewSearch[hanlder]
+    controlSearchResults();
+};
+init();

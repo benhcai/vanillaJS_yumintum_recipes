@@ -1,0 +1,18 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON
+);
+// For functions used many times
+// getJSON and Error handling
+const getJSON = async function(url) {
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        // Check for valid url
+        if (!res.ok) throw new Error(`${data.message} ${res.status}`);
+        // Destructure for recipe object and return
+        return data.data.recipe;
+    } catch (err) {
+        throw err;
+    }
+};

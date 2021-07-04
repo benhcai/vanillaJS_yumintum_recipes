@@ -1,0 +1,17 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class viewSearchResults extends _viewDefault.default {
+    _parentElement = document.querySelector(".results");
+    _generateMarkup() {
+        console.log(this._data.results);
+        let mark = "";
+        const checkActive = result.id === window.location.hash.slice(1) ? "preview__link--active" : "";
+        this._data.results.slice(0, 9).forEach((result)=>{
+            mark += `\n        <li class="preview">\n        <a class="preview__link preview__link--active" href="#23456">\n            <figure class="preview__fig">\n                <img src="${result.image}" alt="Test" />\n            </figure>\n            <div class="preview__data">\n                <h4 class="preview__title">${result.title}</h4>\n                <p class="preview__publisher">${result.publisher}</p>\n                <div class="preview__user-generated">\n                <svg>\n                    <use href="${this.icons}#icon-user"></use>\n                </svg>\n                </div>\n            </div>\n        </a>\n        </li>\n        `;
+        });
+        return mark;
+    }
+}
+exports.default = new viewSearchResults();
