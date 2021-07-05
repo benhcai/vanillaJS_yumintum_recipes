@@ -72,6 +72,11 @@ const controlServings = function (newServings) {
   ViewRecipe.update(model.state.myrecipe);
 };
 
+const controlBookmarks = function () {
+  // On click, change icon
+  // On click, Add recipe to state array
+};
+
 const init = function () {
   console.clear();
   console.log("---App started from init--");
