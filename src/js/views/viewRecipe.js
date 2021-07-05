@@ -23,8 +23,18 @@ class ViewRecipe extends View {
     });
   }
 
+  addHandlerClickBookmark(handler) {
+    // When this is ran, the btn--bookmark element does not exist so we need to attatch listener to parent
+    this._parentElement.addEventListener("click", function (e) {
+      const btn = e.target.closest(".btn--bookmark");
+      if (!btn) return;
+
+      handler();
+    });
+  }
+
   // R6. Render document (markup) inside this view component
-  // inherited render(data)
+  // inherited render(data) from View
   _generateMarkup() {
     return `
     <figure class="recipe__fig">
@@ -75,9 +85,9 @@ class ViewRecipe extends View {
         </svg>
         -->
       </div>
-      <button class="btn--round">
+      <button class="btn--round btn--bookmark">
         <svg class="">
-          <use href="${this.icons}#icon-bookmark-empty"></use>
+          <use href="${this.icons}#icon-bookmark${this._data.bookmark ? "-fill" : ""}"></use>
         </svg>
       </button>
     </div>

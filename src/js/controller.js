@@ -59,7 +59,6 @@ const controlSearchResults = async function (myquery) {
 
 // Control render of pages of search results and page buttons
 const controlPagination = function (page) {
-  console.log("controlPagin.:", page);
   // render clears the previous results, only the selected page is rendered
   ViewSearchResults.render(model.loadSearchResultsPage(page));
   ViewPagination.render(model.state.search);
@@ -72,9 +71,11 @@ const controlServings = function (newServings) {
   ViewRecipe.update(model.state.myrecipe);
 };
 
-const controlBookmarks = function () {
-  // On click, change icon
-  // On click, Add recipe to state array
+const controlBookmark = function () {
+  if (!model.state.myrecipe.bookmark) model.addBookmark(model.state.myrecipe);
+  else model.removeBookmark(model.state.myrecipe.id);
+  console.log(model.state.myrecipe.bookmark);
+  ViewRecipe.update(model.state.myrecipe);
 };
 
 const init = function () {
@@ -82,6 +83,7 @@ const init = function () {
   console.log("---App started from init--");
   ViewRecipe.addHandlerRender(controlRecipes); // R1. controlRecipes subscribes to ViewRecipe
   ViewRecipe.addHandlerUpdateServings(controlServings);
+  ViewRecipe.addHandlerClickBookmark(controlBookmark);
   controlSearchResults("egg"); // Initialise search results so it's not empty
   ViewSearch.addHandlerSearch(controlSearchResults); // S1. controlSearchResult subscribes to ViewSearch[hanlder]
   ViewPagination.addHandlerClick(controlPagination);

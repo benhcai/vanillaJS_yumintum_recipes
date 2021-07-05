@@ -30,7 +30,6 @@ export default class View {
 
   update(data) {
     this._data = data;
-
     let newMarkup = this._generateMarkup();
 
     // String -> Markup object. Virtual DOM living in memory.
@@ -44,13 +43,12 @@ export default class View {
       const curEl = curElements[i];
 
       // For elements whose TEXT have change, replace text.
-      if (!newEl.isEqualNode(curEl) && newEl?.firstChild.nodeValue.trim() !== "") {
+      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") {
         curEl.textContent = newEl.textContent;
       }
 
       // Append elements that have changed with ATTRIBUTES.
       if (!newEl.isEqualNode(curEl)) {
-        console.log("newelAttrib", newEl.attributes);
         Array.from(newEl.attributes).forEach((attr) => curEl.setAttribute(attr.name, attr.value));
       }
     });

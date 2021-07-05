@@ -10,13 +10,14 @@ export const state = {
     page: 1,
   },
   clicks: 0,
+  bookmarks: [],
 };
 
 // R5. Get recipe from web API
-export const getRecipe = async function (url) {
+export const getRecipe = async function (id) {
   try {
     // Fetch recipes based on url function parameter
-    const data = await getJSON(`${API_URL}/${url}`);
+    const data = await getJSON(`${API_URL}/${id}`);
     const dataParsed = data.data.recipe;
     // Create new object with new keys
     state.myrecipe = {
@@ -29,6 +30,10 @@ export const getRecipe = async function (url) {
       servings: dataParsed.servings,
       cookingTime: dataParsed.cooking_time,
     };
+
+    // Loop over the bookmarks array, if any of them equal the passed in id, then set the value for myrecipe.bookmark
+    if (state.bookmarks.some((b) => b.id === id)) state.myrecipe.bookmark = true;
+    else state.myrecipe.bookmark = false;
     return state.myrecipe;
   } catch (err) {
     console.log("model: ", err);
@@ -71,4 +76,22 @@ export const updateServings = function (newServings) {
     // newQuant = oldQuant * newServings / oldServings
   });
   state.myrecipe.servings = Number(newServings);
+};
+
+// Adding something: parameter is the whole data
+export const addBookmark = function (recipe) {
+  // Mark current recipe as bookmarked
+  state.myrecipe.bookmark = true;
+
+  // Add bookmark
+  state.bookmarks.push(recipe);
+  console.log("bookmarks", state.bookmarks);
+  console.log(state.myrecipe.bookmark);
+};
+
+// Removing something: parameter is only the id
+export const removeBookmark = function (id) {
+  state.myrecipe.bookmark = false;
+  const index = state.bookmarks.findIndex((el) => el.id === id);
+  state.bookmarks.splice(index, 1);
 };
