@@ -6,6 +6,9 @@ export default class View {
   _data;
   clicks;
 
+  BADFUNCTION() {
+    // REKT
+  }
   renderSpinner() {
     const markup = `
         <div class="spinner">
