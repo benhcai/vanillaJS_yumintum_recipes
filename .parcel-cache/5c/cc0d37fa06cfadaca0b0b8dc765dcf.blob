@@ -1,0 +1,25 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class ViewPagination extends _viewDefault.default {
+    _parentElement = document.querySelector(".pagination");
+    _generateMarkup() {
+        console.log("thipage", this._data.length);
+        // On page 1, other pages exist
+        // On page x, not last page
+        // On page x, last  page
+        // On page 1, no other pages exist
+        let markup = `\n        <button class="btn--inline pagination__btn--prev">\n            <svg class="search__icon">\n                <use href="${this.icons}#icon-arrow-left"></use>\n            </svg>\n            <span>Page 1</span>\n        </button>\n        <button class="btn--inline pagination__btn--next">\n            <span>Page 3</span>\n                <svg class="search__icon">\n                <use href="${this.icons}#icon-arrow-right"></use>\n            </svg>\n        </button>\n        `;
+        return markup;
+    }
+    _generateButton(scenario) {
+        switch(scenario){
+            case "left":
+                return;
+            case "right":
+                return;
+        }
+    }
+}
+exports.default = new ViewPagination();

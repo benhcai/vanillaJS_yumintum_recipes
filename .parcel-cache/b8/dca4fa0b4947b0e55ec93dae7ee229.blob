@@ -1,0 +1,58 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class viewSearchResults extends _viewDefault.default {
+    _parentElement = document.querySelector(".results");
+    _errorMessage = "The recipe was not found. It may have been moved or deleted, please try a different URL address.";
+    clicks = 0;
+    hashArr = [];
+    // S6. Renders a list of marked up divs in the results section
+    _generateMarkup() {
+        console.log("viewSearchResutl", this._data);
+        let mark = "";
+        this._data.forEach((result)=>{
+            //   let checkActive = result.id === window.location.hash.slice(1) ? "preview__link--active" : "";
+            let checkActive = "";
+            mark += `\n        <li class="preview">\n        <a class="preview__link ${checkActive}" href="#${result.id}">\n            <figure class="preview__fig">\n                <img src="${result.image}" alt="Test" />\n            </figure>\n            <div class="preview__data">\n                <h4 class="preview__title">${result.title}</h4>\n                <p class="preview__publisher">${result.publisher}</p>\n                <div class="preview__user-generated">\n                <svg>\n                    <use href="${this.icons}#icon-user"></use>\n                </svg>\n                </div>\n            </div>\n        </a>\n        </li>\n        `;
+        });
+        return mark;
+    }
+    listenForActive() {
+        window.addEventListener("hashchange", ()=>{
+            // find element
+            // #window_hash === a_href
+            let hash = `#${window.location.hash.slice(1)}`;
+            // Keep track of last hash and remove class from it
+            this.clicks++;
+            if (this.clicks > 1) {
+                this.hashArr[0] = this.hashArr[1];
+                this.hashArr[1] = hash;
+                let elementOld = document.querySelector(`a[href='${this.hashArr[0]}']`).parentElement;
+                elementOld.classList.remove("preview__link--active");
+                console.dir({
+                    elementOld
+                });
+            } else this.hashArr[1] = hash;
+            if (this.clicks > 1) {
+                let elementOld = document.querySelector(`a[href='${this.hashArr[0]}']`).parentElement;
+                elementOld.classList.remove("preview__link--active");
+                console.dir({
+                    elementOld
+                });
+            }
+            // Highlight new active
+            let selector = `a[href='#${hash}']`;
+            let element = document.querySelector(`a[href='${hash}']`).parentElement;
+            element.classList.add("preview__link--active");
+            console.dir({
+                hash,
+                selector,
+                element,
+                clicks: this.clicks,
+                hashArr: this.hashArr
+            });
+        });
+    }
+}
+exports.default = new viewSearchResults();

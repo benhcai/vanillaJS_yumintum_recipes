@@ -1,9 +1,12 @@
 // Getting input data is related to the DOM so it should be handled by the view.
+import View from "./View";
 
-class ViewSearch {
+class ViewSearch extends View {
   _parentElement = document.querySelector(".search");
 
   getQuery() {
+    console.log(this._parentElement);
+    console.log(this._parentElement.querySelector(".search__field"));
     return this._parentElement.querySelector(".search__field").value;
   }
 

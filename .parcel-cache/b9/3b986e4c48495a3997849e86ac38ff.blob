@@ -1,0 +1,7 @@
+var nativeExpm1 = Math.expm1;
+var exp = Math.exp;
+// `Math.expm1` method implementation
+// https://tc39.github.io/ecma262/#sec-math.expm1
+module.exports = !nativeExpm1 || nativeExpm1(10) > 22025.465794806718 || nativeExpm1(10) < 22025.465794806718 || nativeExpm1(-0.00000000000000002) != -0.00000000000000002 ? function expm1(x) {
+    return (x = +x) == 0 ? x : x > -0.000001 && x < 0.000001 ? x + x * x / 2 : exp(x) - 1;
+} : nativeExpm1;

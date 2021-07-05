@@ -12,7 +12,8 @@ const timeout = function (s) {
 // getJSON and Error handling
 const getJSON = async function (url) {
   try {
-    const res = await Promise.race([timeout(TIMEOUT_SEC), fetch(url)]);
+    // const res = await Promise.race([timeout(TIMEOUT_SEC), fetch(url)]);
+    const res = await fetch(url);
     const data = await res.json();
     // Check for valid url
     if (!res.ok) throw new Error(`💥 ${res.status} - Not resolved: ${data.message}`);

@@ -4,16 +4,20 @@ class viewSearchResults extends View {
   _parentElement = document.querySelector(".results");
   _errorMessage =
     "The recipe was not found. It may have been moved or deleted, please try a different URL address.";
+  hashArr = [];
 
+  // S6. Renders a list of marked up divs in the results section
   _generateMarkup() {
-    console.log("vsr", this._data.results);
-    let mark = "";
+    this.clicks = this._data[1];
+    const curId = window.location.hash.slice(1);
 
-    this._data.results.slice(0, 9).forEach((result) => {
-      let checkActive = result.id === window.location.hash.slice(1) ? "preview__link--active" : "";
+    let mark = "";
+    this._data[0].forEach((result) => {
       mark += `
         <li class="preview">
-        <a class="preview__link ${checkActive}" href="#${result.id}">
+        <a class="preview__link ${result.id === curId ? "preview__link--active" : ""}" href="#${
+        result.id
+      }">
             <figure class="preview__fig">
                 <img src="${result.image}" alt="Test" />
             </figure>
@@ -30,8 +34,30 @@ class viewSearchResults extends View {
         </li>
         `;
     });
-
     return mark;
+  }
+
+  listenForActive() {
+    window.addEventListener("hashchange", () => {
+      let hash = `${window.location.hash}`; //# a1....
+
+      // Keep track of current and last hash
+      console.log("clicks", this.clicks);
+      this.clicks++;
+      this.hashArr[0] = this.hashArr[1];
+      this.hashArr[1] = hash;
+      // On second select, remove class for old has
+      if (this.clicks > 1) {
+        let elementOld = document.querySelector(`a[href='${this.hashArr[0]}']`).parentElement;
+        elementOld.classList.remove("preview__link--active");
+      }
+
+      // Highlight new active
+      let element = document.querySelector(`a[href='${hash}']`).parentElement;
+      element.classList.add("preview__link--active");
+
+      console.log({ hash, element, clicks: this.clicks, hashArr: this.hashArr });
+    });
   }
 }
 

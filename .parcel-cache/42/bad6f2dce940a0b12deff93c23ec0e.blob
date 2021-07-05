@@ -477,6 +477,10 @@ body {
   color: #918581;
 }
 
+.recipe__user-generated {
+  opacity: 0;
+}
+
 .recipe {
   background-color: #f9f5f3;
 }

@@ -5,12 +5,14 @@ import * as model from "./model";
 import ViewRecipe from "./views/viewRecipe";
 import ViewSearch from "./views/viewSearch";
 import ViewSearchResults from "./views/viewSearchResults";
+import ViewPagination from "./views/viewPagination";
 
 // Parcel hotswapping
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+//   module.hot.accept();
+// }
 
+// Control processing and redering of selected recipe
 const controlRecipes = async function () {
   try {
     // R3. Get URL ID from window
@@ -19,6 +21,9 @@ const controlRecipes = async function () {
 
     // 0. Recipe loading spinner
     ViewRecipe.renderSpinner();
+
+    // Update results view to mark selected search result
+    ViewSearchResults.update(model.loadSearchResultsPage());
 
     // R4. Send ID to model and wait for recipe
     let myrecipe = await model.getRecipe(id);
@@ -31,29 +36,50 @@ const controlRecipes = async function () {
   }
 };
 
-const controlSearchResults = async function () {
+// Control processing of search results
+const controlSearchResults = async function (myquery) {
   try {
     ViewSearchResults.renderSpinner();
     // S3. controlSearchResult gets the search query (input data)
-    const query = ViewSearch.getQuery();
-    if (!query) console.log("query empty", query);
-    // S4. Send query to model and load search results
+    // let query = ViewSearch.getQuery();
+    // if (!query) {
+    //   query = myquery;
+    // }
+    let query = ViewSearch.getQuery() === "" ? myquery : ViewSearch.getQuery();
+    // S4. Send query to model and load results based on search query
     await model.loadSearchResults(query);
-    // S5. Render result
-    console.log(model.state.search); // S5. Send to View to handle retrieved data
-    // Display a list of marked up divs in the results section
-    ViewSearchResults.render(model.state.search);
+    // S5. Send list of recipes to View (ViewSearchResults & ViewPagination) to handle retrieved data
+    controlPagination(1); // start on page 1
+    // Highlight active recipe
+    // ViewSearchResults.listenForActive();
   } catch (err) {
     console.log("controlSearch", err);
   }
 };
 
+// Control render of pages of search results and page buttons
+const controlPagination = function (page) {
+  console.log("controlPagin.:", page);
+  // render clears the previous results, only the selected page is rendered
+  ViewSearchResults.render(model.loadSearchResultsPage(page));
+  ViewPagination.render(model.state.search);
+};
+
+// Control increase/decrease of servings
+const controlServings = function (newServings) {
+  model.updateServings(newServings);
+  // ViewRecipe.render(model.state.myrecipe);
+  ViewRecipe.update(model.state.myrecipe);
+};
+
 const init = function () {
   console.clear();
-  console.log("console msg inti");
+  console.log("---App started from init--");
   ViewRecipe.addHandlerRender(controlRecipes); // R1. controlRecipes subscribes to ViewRecipe
-  controlSearchResults();
+  ViewRecipe.addHandlerUpdateServings(controlServings);
+  controlSearchResults("egg"); // Initialise search results so it's not empty
   ViewSearch.addHandlerSearch(controlSearchResults); // S1. controlSearchResult subscribes to ViewSearch[hanlder]
+  ViewPagination.addHandlerClick(controlPagination);
 };
 
 init();

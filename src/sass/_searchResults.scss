@@ -14,7 +14,7 @@
   padding: 0 3.5rem;
 
   &::after {
-    content: '';
+    content: "";
     display: table;
     clear: both;
   }
@@ -39,4 +39,8 @@
   .twitter-link:visited {
     color: $color-grey-dark-2;
   }
+}
+
+.recipe__user-generated {
+  opacity: 0;
 }

@@ -1,4 +1,4 @@
-import { API_URL } from "./config";
+import { API_URL, API_KEY, RESULTS_PER_PAGE } from "./config";
 import { getJSON } from "./helper";
 
 export const state = {
@@ -6,14 +6,17 @@ export const state = {
   search: {
     query: "",
     results: [],
+    resultsPerPage: RESULTS_PER_PAGE,
+    page: 1,
   },
+  clicks: 0,
 };
 
 // R5. Get recipe from web API
 export const getRecipe = async function (url) {
   try {
     // Fetch recipes based on url function parameter
-    const data = await getJSON(`${API_URL}${url}`);
+    const data = await getJSON(`${API_URL}/${url}`);
     const dataParsed = data.data.recipe;
     // Create new object with new keys
     state.myrecipe = {
@@ -36,10 +39,11 @@ export const getRecipe = async function (url) {
 // S4. model.loadSearchResults retrieves the data from external web API
 export const loadSearchResults = async function (query) {
   try {
+    state.clicks = 0;
+    state.search.page = 1;
     state.search.query = query;
-    const result = await getJSON(
-      `https://forkify-api.herokuapp.com/api/v2/recipes?search=${query}`
-    );
+
+    const result = await getJSON(`${API_URL}?search=${query}`);
     const recipesParsed = result.data.recipes;
     state.search.results = recipesParsed.map((recipe) => {
       return {
@@ -49,8 +53,22 @@ export const loadSearchResults = async function (query) {
         image: recipe.image_url,
       };
     });
-    console.log("repparsed", state);
   } catch (err) {
     throw err;
   }
+};
+
+export const loadSearchResultsPage = function (page = 1) {
+  state.search.page = page;
+  const start = (page - 1) * state.search.resultsPerPage;
+  const end = page * state.search.resultsPerPage;
+  return [state.search.results.slice(start, end), state.clicks];
+};
+
+export const updateServings = function (newServings) {
+  state.myrecipe.ingredients.forEach((ing) => {
+    ing.quantity = (ing.quantity * newServings) / state.myrecipe.servings;
+    // newQuant = oldQuant * newServings / oldServings
+  });
+  state.myrecipe.servings = Number(newServings);
 };

@@ -1,0 +1,45 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+var _config = require("../config");
+class ViewPagination extends _viewDefault.default {
+    _parentElement = document.querySelector(".pagination");
+    currentPage;
+    // Publish button clicks
+    addHandlerClick() {
+    }
+    _generateMarkup() {
+        this.currentPage = this._data.page;
+        const numRecipes = this._data.results.length;
+        const numPages = Math.ceil(numRecipes / _config.RESULTS_PER_PAGE);
+        console.log({
+            currentPage: this.currentPage,
+            numRecipes,
+            numPages
+        });
+        let markup;
+        // On page 1, other pages exist
+        if (this.currentPage === 1 && numPages > 1) {
+            markup = this._generateButton("right");
+            console.log(markup);
+        }
+        // On page x, not last page
+        if (this.currentPage !== numPages && numPages > 1 && this.currentPage > 1) markup = `\n        ${this._generateButton("left")};\n        ${this._generateButton("right")};\n      `;
+        // On page x, last  page
+        if (this.currentPage === numPages && numPages > 1) markup = this._generateButton("left");
+        this.currentPage;
+        console.log(markup);
+        return markup;
+    }
+    _generateButton(scenario) {
+        console.log(this.currentPage);
+        switch(scenario){
+            case "left":
+                return `\n        <button class="btn--inline pagination__btn--prev">\n            <svg class="search__icon">\n                <use href="${this.icons}#icon-arrow-left"></use>\n            </svg>\n            <span>Page ${this.currentPage - 1}</span>\n        </button> `;
+            case "right":
+                return `\n        <button class="btn--inline pagination__btn--next">\n            <span>Page ${this.currentPage + 1}</span>\n            <svg class="search__icon">\n            <use href="${this.icons}#icon-arrow-right"></use>\n            </svg>\n         </button>`;
+        }
+    }
+}
+exports.default = new ViewPagination();

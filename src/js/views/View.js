@@ -4,6 +4,7 @@ import icons from "url:../../img/icons.svg"; // Parcel 2: for static assets
 export default class View {
   icons = icons;
   _data;
+  clicks;
 
   renderSpinner() {
     const markup = `
@@ -19,10 +20,37 @@ export default class View {
 
   render(data) {
     // If there is no data or there is an array but it's empty, return error.
-    if (!data || (Array.isArray(data) && data.length === 0)) return this.renderError();
     this._data = data;
     let markup = this._generateMarkup();
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
+  }
+
+  update(data) {
+    this._data = data;
+
+    let newMarkup = this._generateMarkup();
+
+    // String -> Markup object. Virtual DOM living in memory.
+    const newDom = document.createRange().createContextualFragment(newMarkup);
+    const newElements = Array.from(newDom.querySelectorAll("*"));
+    const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+    const newNodes = newDom.querySelectorAll("*");
+    const curNodes = this._parentElement.querySelectorAll("*");
+    // console.log("curEl", curNodes);
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+
+      // For elements whose TEXT have change, replace text.
+      if (!newEl.isEqualNode(curEl) && newEl?.firstChild.nodeValue.trim() !== "") {
+        curEl.textContent = newEl.textContent;
+      }
+
+      // Append elements that have changed with ATTRIBUTES.
+      if (!newEl.isEqualNode(curEl)) {
+        console.log("newelAttrib", newEl.attributes);
+        Array.from(newEl.attributes).forEach((attr) => curEl.setAttribute(attr.name, attr.value));
+      }
+    });
   }
 
   renderError(message = this._errorMessage) {
