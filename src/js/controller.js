@@ -6,11 +6,7 @@ import ViewRecipe from "./views/viewRecipe";
 import ViewSearch from "./views/viewSearch";
 import ViewSearchResults from "./views/viewSearchResults";
 import ViewPagination from "./views/viewPagination";
-
-// Parcel hotswapping
-// if (module.hot) {
-//   module.hot.accept();
-// }
+import ViewBookmarks from "./views/viewBookmarks";
 
 // Control processing and redering of selected recipe
 const controlRecipes = async function () {
@@ -23,7 +19,9 @@ const controlRecipes = async function () {
     ViewRecipe.renderSpinner();
 
     // Update results view to mark selected search result
-    ViewSearchResults.update(model.loadSearchResultsPage());
+    ViewSearchResults.update(model.loadSearchResultsPage()); // ViewSearchResults.update requires [recipes, clicks]
+    console.log("model.state.bookmark", model.state.bookmark);
+    ViewBookmarks.update(model.state.bookmarks);
 
     // R4. Send ID to model and wait for recipe
     let myrecipe = await model.getRecipe(id);
@@ -41,10 +39,6 @@ const controlSearchResults = async function (myquery) {
   try {
     ViewSearchResults.renderSpinner();
     // S3. controlSearchResult gets the search query (input data)
-    // let query = ViewSearch.getQuery();
-    // if (!query) {
-    //   query = myquery;
-    // }
     let query = ViewSearch.getQuery() === "" ? myquery : ViewSearch.getQuery();
     // S4. Send query to model and load results based on search query
     await model.loadSearchResults(query);
@@ -74,8 +68,10 @@ const controlServings = function (newServings) {
 const controlBookmark = function () {
   if (!model.state.myrecipe.bookmark) model.addBookmark(model.state.myrecipe);
   else model.removeBookmark(model.state.myrecipe.id);
-  console.log(model.state.myrecipe.bookmark);
+
   ViewRecipe.update(model.state.myrecipe);
+
+  ViewBookmarks.render(model.state.bookmarks);
 };
 
 const init = function () {

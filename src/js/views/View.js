@@ -23,21 +23,21 @@ export default class View {
 
   render(data) {
     // If there is no data or there is an array but it's empty, return error.
+    console.log("V render data", data);
     this._data = data;
-    let markup = this._generateMarkup();
+    let markup = this._generateMarkup(data);
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
   update(data) {
     this._data = data;
-    let newMarkup = this._generateMarkup();
+    console.log("data view", data);
+    let newMarkup = this._generateMarkup(data);
 
     // String -> Markup object. Virtual DOM living in memory.
     const newDom = document.createRange().createContextualFragment(newMarkup);
     const newElements = Array.from(newDom.querySelectorAll("*"));
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
-    const newNodes = newDom.querySelectorAll("*");
-    const curNodes = this._parentElement.querySelectorAll("*");
     // console.log("curEl", curNodes);
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];

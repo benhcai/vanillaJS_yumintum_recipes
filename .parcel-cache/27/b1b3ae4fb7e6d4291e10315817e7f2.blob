@@ -1,0 +1,16 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _viewJs = require("./View.js");
+var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+var _viewPreview = require("./viewPreview");
+var _viewPreviewDefault = parcelHelpers.interopDefault(_viewPreview);
+class ViewBookmarks extends _viewJsDefault.default {
+    _parentElement = document.querySelector(".bookmarks__list");
+    _errorMessage = "No bookmarks yet. Find a recipe you then bookmark it to see it here.";
+    _generateMarkup(data) {
+        console.log(!data, !this._data);
+        // if (!data && !this._data) return;
+        _viewPreviewDefault.default.generateMarkup(data);
+    }
+}
+exports.default = new ViewBookmarks();

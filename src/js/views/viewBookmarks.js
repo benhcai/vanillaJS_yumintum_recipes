@@ -1,0 +1,14 @@
+import View from "./View.js";
+import ViewPreview from "./viewPreview";
+
+class ViewBookmarks extends View {
+  _parentElement = document.querySelector(".bookmarks__list");
+  _errorMessage = "No bookmarks yet. Find a recipe you then bookmark it to see it here.";
+
+  _generateMarkup(data) {
+    console.log("viewbook", data);
+    return ViewPreview.generateMarkup(data);
+  }
+}
+
+export default new ViewBookmarks();
