@@ -34,7 +34,6 @@ class ViewPreview extends View {
         </li>
         `;
     });
-    console.log("vprev markup", markup);
     return markup;
   }
 
