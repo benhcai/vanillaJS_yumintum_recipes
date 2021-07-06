@@ -6,7 +6,6 @@ class ViewPreview extends View {
 
   generateMarkup(data) {
     data = data ?? this._data;
-    console.log("vP data", data);
     // Load pageItems & clicks or array
     let clicks = data.stateClicks ?? 0;
     const curId = window.location.hash.slice(1);

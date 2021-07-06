@@ -23,32 +23,30 @@ export default class View {
 
   render(data) {
     // If there is no data or there is an array but it's empty, return error.
-    console.log("V render data", data);
     this._data = data;
-    let markup = this._generateMarkup(data);
+    let markup = this._generateMarkup();
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
   update(data) {
     this._data = data;
-    console.log("data view", data);
-    let newMarkup = this._generateMarkup(data);
+    let newMarkup = this._generateMarkup();
 
     // String -> Markup object. Virtual DOM living in memory.
     const newDom = document.createRange().createContextualFragment(newMarkup);
     const newElements = Array.from(newDom.querySelectorAll("*"));
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
-    // console.log("curEl", curNodes);
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 
       // For elements whose TEXT have change, replace text.
-      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") {
+      if (!newEl.isEqualNode(curEl) && newEl?.firstChild.nodeValue.trim() !== "") {
         curEl.textContent = newEl.textContent;
       }
 
       // Append elements that have changed with ATTRIBUTES.
       if (!newEl.isEqualNode(curEl)) {
+        console.log("newelAttrib", newEl.attributes);
         Array.from(newEl.attributes).forEach((attr) => curEl.setAttribute(attr.name, attr.value));
       }
     });

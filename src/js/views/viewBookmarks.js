@@ -6,7 +6,6 @@ class ViewBookmarks extends View {
   _errorMessage = "No bookmarks yet. Find a recipe you then bookmark it to see it here.";
 
   _generateMarkup(data) {
-    console.log("viewbook", data);
     return ViewPreview.generateMarkup(data);
   }
 }
