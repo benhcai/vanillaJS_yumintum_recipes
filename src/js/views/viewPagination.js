@@ -20,7 +20,6 @@ class ViewPagination extends View {
     this.currentPage = this._data.page;
     const numRecipes = this._data.results.length;
     const numPages = Math.ceil(numRecipes / RESULTS_PER_PAGE);
-    console.log({ currentPage: this.currentPage, numRecipes, numPages });
 
     let markup;
     // On page 1, other pages exist
@@ -46,7 +45,6 @@ class ViewPagination extends View {
   }
 
   _generateButton(scenario) {
-    console.log("currentPage", this.currentPage);
     switch (scenario) {
       case "left":
         return `

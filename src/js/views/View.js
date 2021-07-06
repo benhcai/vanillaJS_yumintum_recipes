@@ -27,16 +27,12 @@ export default class View {
 
   update(data) {
     this._data = data;
-
     let newMarkup = this._generateMarkup();
 
     // String -> Markup object. Virtual DOM living in memory.
     const newDom = document.createRange().createContextualFragment(newMarkup);
     const newElements = Array.from(newDom.querySelectorAll("*"));
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
-    const newNodes = newDom.querySelectorAll("*");
-    const curNodes = this._parentElement.querySelectorAll("*");
-    // console.log("curEl", curNodes);
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 

@@ -1,0 +1,57 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// import icons from '../img/icons.svg' // Parcel 1
+var _iconsSvg = require("url:../../img/icons.svg"); // Parcel 2: for static assets
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class View {
+    icons = _iconsSvgDefault.default;
+    _data;
+    clicks;
+    BADFUNCTION() {
+    // REKT
+    }
+    renderSpinner() {
+        const markup = `\n        <div class="spinner">\n            <svg>\n            <use href="${this.icons}#icon-loader"></use>\n            </svg>\n        </div>\n        `;
+        // this._parentElement is only defined in the children
+        this._clearThenInsert(markup, this._parentElement, "afterbegin");
+    }
+    render(data, insert = true) {
+        // If there is no data or there is an array but it's empty, return error.
+        this._data = data;
+        let markup = this._generateMarkup();
+        if (!insert) return markup;
+        this._clearThenInsert(markup, this._parentElement, "afterbegin");
+    }
+    update(data) {
+        this._data = data;
+        console.log("update", data);
+        let newMarkup = this._generateMarkup();
+        // String -> Markup object. Virtual DOM living in memory.
+        const newDom = document.createRange().createContextualFragment(newMarkup);
+        const newElements = Array.from(newDom.querySelectorAll("*"));
+        const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+        const newNodes = newDom.querySelectorAll("*");
+        const curNodes = this._parentElement.querySelectorAll("*");
+        console.log("curEl", curElements);
+        newElements.forEach((newEl, i)=>{
+            const curEl = curElements[i];
+            // For elements whose TEXT have change, replace text.
+            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") curEl.textContent = newEl.textContent;
+            // Append elements that have changed with ATTRIBUTES.
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value)
+            );
+        });
+    }
+    renderError(message = this._errorMessage) {
+        const markup = `\n      <div class="error">\n        <div>\n          <svg>\n            <use href="${this.icons}#icon-alert-triangle"></use>\n          </svg>\n        </div>\n        <p>${message}</p>\n      </div>;\n      `;
+        this._clearThenInsert(markup, this._parentElement, "afterbegin");
+    }
+    renderSuccess(message = this._successMessage) {
+        const markup = `\n      <div class="message">\n          <div>\n            <svg>\n              <use href="${this.icons}#icon-smile"></use>\n            </svg>\n          </div>\n          <p>${message}</p>\n        </div>\n        `;
+    }
+    _clearThenInsert = function(markup, element, position) {
+        element.innerHTML = "";
+        element.insertAdjacentHTML(position, markup);
+    };
+}
+exports.default = View;

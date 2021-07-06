@@ -1,0 +1,18 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// This is set up as an interface to be implemented by other classes.
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class ViewPreview extends _viewDefault.default {
+    _parentElement = "";
+    hashArr = [];
+    _markup = "";
+    // S6. Renders a list of marked up divs in the results section
+    _generateMarkup() {
+        console.log("prev", this._data);
+        const curId = window.location.hash.slice(1);
+        this._markup += `\n        <li class="preview">\n        <a class="preview__link ${this._data.id === curId ? "preview__link--active" : ""}" href="#${this._data.id}">\n            <figure class="preview__fig">\n                <img src="${this._data.image}" alt="Test" />\n            </figure>\n            <div class="preview__data">\n                <h4 class="preview__title">${this._data.title}</h4>\n                <p class="preview__publisher">${this._data.publisher}</p>\n                <div class="preview__user-generated">\n                <svg>\n                    <use href="${this.icons}#icon-user"></use>\n                </svg>\n                </div>\n            </div>\n        </a>\n        </li>\n        `;
+        return this._markup;
+    }
+}
+exports.default = new ViewPreview();

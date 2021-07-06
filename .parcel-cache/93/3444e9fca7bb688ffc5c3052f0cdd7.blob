@@ -1,0 +1,95 @@
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "state", ()=>state
+);
+parcelHelpers.export(exports, "getRecipe", ()=>getRecipe
+);
+parcelHelpers.export(exports, "loadSearchResults", ()=>loadSearchResults
+);
+parcelHelpers.export(exports, "loadSearchResultsPage", ()=>loadSearchResultsPage
+);
+parcelHelpers.export(exports, "updateServings", ()=>updateServings
+);
+parcelHelpers.export(exports, "addBookmark", ()=>addBookmark
+);
+var _config = require("./config");
+var _helper = require("./helper");
+const state = {
+    myrecipe: {
+    },
+    search: {
+        query: "",
+        results: [],
+        resultsPerPage: _config.RESULTS_PER_PAGE,
+        page: 1
+    },
+    clicks: 0,
+    bookmarks: []
+};
+const getRecipe = async function(id) {
+    try {
+        // Fetch recipes based on url function parameter
+        const data = await _helper.getJSON(`${_config.API_URL}/${id}`);
+        const dataParsed = data.data.recipe;
+        // Create new object with new keys
+        state.myrecipe = {
+            id: dataParsed.id,
+            title: dataParsed.title,
+            publisher: dataParsed.publisher,
+            sourceUrl: dataParsed.source_url,
+            image: dataParsed.image_url,
+            ingredients: dataParsed.ingredients,
+            servings: dataParsed.servings,
+            cookingTime: dataParsed.cooking_time
+        };
+        if (state.bookmarks.some((b)=>b.id === id
+        )) state.myrecipe.bookmark = true;
+        return state.myrecipe;
+    } catch (err) {
+        console.log("model: ", err);
+        throw err;
+    }
+};
+const loadSearchResults = async function(query) {
+    try {
+        state.clicks = 0;
+        state.search.page = 1;
+        state.search.query = query;
+        const result = await _helper.getJSON(`${_config.API_URL}?search=${query}`);
+        const recipesParsed = result.data.recipes;
+        state.search.results = recipesParsed.map((recipe)=>{
+            return {
+                id: recipe.id,
+                title: recipe.title,
+                publisher: recipe.publisher,
+                image: recipe.image_url
+            };
+        });
+    } catch (err) {
+        throw err;
+    }
+};
+const loadSearchResultsPage = function(page = 1) {
+    state.search.page = page;
+    const start = (page - 1) * state.search.resultsPerPage;
+    const end = page * state.search.resultsPerPage;
+    return [
+        state.search.results.slice(start, end),
+        state.clicks
+    ];
+};
+const updateServings = function(newServings) {
+    state.myrecipe.ingredients.forEach((ing)=>{
+        ing.quantity = ing.quantity * newServings / state.myrecipe.servings;
+    // newQuant = oldQuant * newServings / oldServings
+    });
+    state.myrecipe.servings = Number(newServings);
+};
+const addBookmark = function(recipe) {
+    // Mark current recipe as bookmarked
+    state.myrecipe.bookmark = state.myrecipe.bookmark ? !state.myrecipe.bookmark : true;
+    // Add bookmark
+    state.bookmarks.push(recipe);
+    console.log(state.bookmarks);
+    console.log(state.myrecipe.bookmark);
+};
