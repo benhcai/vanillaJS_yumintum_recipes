@@ -38,7 +38,7 @@ class ViewPagination extends View {
       markup = this._generateButton("left");
     }
     // On page 1, no other pages exist
-    if (this.currentPage === 1 && numPages === 1) {
+    if (this.currentPage === 1 && numPages <= 1) {
       markup = "";
     }
     return markup;
