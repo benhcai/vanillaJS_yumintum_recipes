@@ -7,6 +7,8 @@ import ViewSearch from "./views/viewSearch";
 import ViewSearchResults from "./views/viewSearchResults";
 import ViewPagination from "./views/viewPagination";
 import ViewBookmarks from "./views/viewBookmarks";
+import ViewAddRecipe from "./views/viewAddRecipe";
+import ViewIcons from "./views/viewIcons";
 
 // Control processing and redering of selected recipe
 const controlRecipes = async function () {
@@ -20,7 +22,8 @@ const controlRecipes = async function () {
 
     // Update results view to mark selected search result
     ViewSearchResults.update(model.loadSearchResultsPage()); // ViewSearchResults.update requires [recipes, clicks]
-    console.log("model.state.bookmark", model.state.bookmark);
+
+    // Rerender active selection in bookmarks list upon click (hash change)
     ViewBookmarks.update(model.state.bookmarks);
 
     // R4. Send ID to model and wait for recipe
@@ -74,15 +77,31 @@ const controlBookmark = function () {
   ViewBookmarks.render(model.state.bookmarks);
 };
 
+const controlLoadBookmarks = function () {
+  if (model.state.bookmarks.length === 0) return;
+  ViewBookmarks.render(model.state.bookmarks);
+};
+
+const controlAddRecipe = function (newRecipe) {
+  model.uploadRecipe(newRecipe);
+  console.log(model.uploadRecipe(newRecipe));
+};
+
 const init = function () {
   console.clear();
   console.log("---App started from init--");
+  model.loadBookmarksFromLocalStorage();
+
+  ViewBookmarks.addHandlerPageLoad(controlLoadBookmarks);
   ViewRecipe.addHandlerRender(controlRecipes); // R1. controlRecipes subscribes to ViewRecipe
   ViewRecipe.addHandlerUpdateServings(controlServings);
   ViewRecipe.addHandlerClickBookmark(controlBookmark);
   controlSearchResults("egg"); // Initialise search results so it's not empty
   ViewSearch.addHandlerSearch(controlSearchResults); // S1. controlSearchResult subscribes to ViewSearch[hanlder]
   ViewPagination.addHandlerClick(controlPagination);
+  ViewAddRecipe.addHandlerUpload(controlAddRecipe);
+  // Parel bug: Icons defined as svgs in HTML don't render. They must be replaced with JS.
+  ViewIcons.replaceIcons();
 };
 
 init();

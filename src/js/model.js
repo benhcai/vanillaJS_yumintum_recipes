@@ -79,15 +79,17 @@ export const updateServings = function (newServings) {
   state.myrecipe.servings = Number(newServings);
 };
 
+const persistBookmarks = function () {
+  localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+};
+
 // Adding something: parameter is the whole data
 export const addBookmark = function (recipe) {
   // Mark current recipe as bookmarked
   state.myrecipe.bookmark = true;
-
   // Add bookmark
   state.bookmarks.push(recipe);
-  console.log("bookmarks", state.bookmarks);
-  console.log(state.myrecipe.bookmark);
+  persistBookmarks();
 };
 
 // Removing something: parameter is only the id
@@ -95,4 +97,31 @@ export const removeBookmark = function (id) {
   state.myrecipe.bookmark = false;
   const index = state.bookmarks.findIndex((el) => el.id === id);
   state.bookmarks.splice(index, 1);
+  persistBookmarks();
+};
+
+export const loadBookmarksFromLocalStorage = function () {
+  const storedBookmarks = localStorage.getItem("bookmarks");
+  if (storedBookmarks) state.bookmarks = JSON.parse(storedBookmarks);
+  console.log("localbookmark", state.bookmarks, JSON.parse(storedBookmarks));
+};
+
+loadBookmarksFromLocalStorage();
+
+// Not invoked as its only for dev work
+const clearBookmarks = function () {
+  localStorage.clear("bookmarks");
+};
+
+export const uploadRecipe = async function (newRecipe) {
+  // Obj -> array
+  const ingredients = Object.entries(newRecipe)
+    .filter((entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
+    .map((ing) => {
+      // Destructure array of values (length = 3)
+      const [quantity, unit, description] = ing[1].replaceAll(" ", "").split(",");
+      // Create object
+      return { quantity, unit, description };
+    });
+  return ingredients;
 };

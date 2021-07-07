@@ -3,8 +3,7 @@ import { Fraction } from "fractional";
 
 class ViewRecipe extends View {
   _parentElement = document.querySelector(".recipe");
-  _errorMessage =
-    "The recipe was not found. It may have been moved or deleted, please try a different URL address.";
+  _errorMessage = "Choose or search for a recipe to get ingredients and cooking instructions.";
   _successMessage = "success!";
 
   // R2. Publish: hashchange occured or load occured event.

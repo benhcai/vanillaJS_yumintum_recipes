@@ -20,7 +20,6 @@ export default class View {
 
   render(data) {
     // If there is no data or there is an array but it's empty, return error.
-    console.log("V render data", data);
     this._data = data;
     let markup = this._generateMarkup(data);
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
@@ -28,7 +27,6 @@ export default class View {
 
   update(data) {
     this._data = data;
-    console.log("data view", data);
     let newMarkup = this._generateMarkup(data);
 
     // String -> Markup object. Virtual DOM living in memory.
