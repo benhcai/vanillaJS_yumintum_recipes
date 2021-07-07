@@ -1,12 +1,12 @@
 {
-  "name": "mine",
+  "name": "recipeproject",
   "version": "1.0.0",
-  "main": "index.js",
+  "default": "index.js",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.htlm"
+    "build": "parcel build index.html --dist-dir ./dist"
   },
-  "author": "",
+  "author": "Benjamin Cai",
   "license": "ISC",
   "dependencies": {
     "core-js": "^3.6.5",
@@ -20,11 +20,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lodash/lodash.git"
+    "url": "git+https://github.com/code0312/project_yummy.git"
   },
   "bugs": {
-    "url": "https://github.com/lodash/lodash/issues"
+    "url": "https://github.com/code0312/project_yummy/issues"
   },
-  "homepage": "https://github.com/lodash/lodash#readme",
+  "homepage": "https://github.com/code0312/project_yummy.git#readme",
   "description": ""
 }
