@@ -6,6 +6,7 @@ class ViewAddRecipe extends View {
   _overlay = document.querySelector(".overlay");
   _btnOpen = document.querySelector(".nav__btn--add-recipe");
   _btnClose = document.querySelector(".btn--close-modal");
+  _successMessage = `Successfully uploaded recipe  🎉`;
 
   // No interaction with the contorller is required, addHandler should run on load
   constructor() {
@@ -14,17 +15,17 @@ class ViewAddRecipe extends View {
     this._addHandlerShowCloseRecipeWindow();
   }
 
-  _toggleWindow() {
+  toggleWindow() {
     this._recipeWindow.classList.toggle("hidden");
     this._overlay.classList.toggle("hidden");
   }
 
   _addHandlerShowAddRecipeWindow() {
-    this._btnOpen.addEventListener("click", this._toggleWindow.bind(this));
+    this._btnOpen.addEventListener("click", this.toggleWindow.bind(this));
   }
 
   _addHandlerShowCloseRecipeWindow() {
-    this._btnClose.addEventListener("click", this._toggleWindow.bind(this));
+    this._btnClose.addEventListener("click", this.toggleWindow.bind(this));
   }
 
   addHandlerUpload(handler) {

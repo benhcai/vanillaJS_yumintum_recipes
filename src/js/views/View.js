@@ -6,6 +6,22 @@ export default class View {
   _data;
   clicks;
 
+  /**
+   *  Render the recieved object to the DOM
+   * @param {Object | Object[]} data The data to be rendered
+   * @param (boolean) [render=true] If false, create markup string instad of rendering to the DOM
+   * @returns {undefined | string}
+   * @this {Object} View instance
+   * @author Benjamin Cai
+   * @todo Wait for API to enable searching user uploaded recipes
+   */
+  render(data) {
+    // If there is no data or there is an array but it's empty, return error.
+    this._data = data;
+    let markup = this._generateMarkup(data);
+    this._clearThenInsert(markup, this._parentElement, "afterbegin");
+  }
+
   renderSpinner() {
     const markup = `
         <div class="spinner">
@@ -15,13 +31,6 @@ export default class View {
         </div>
         `;
     // this._parentElement is only defined in the children
-    this._clearThenInsert(markup, this._parentElement, "afterbegin");
-  }
-
-  render(data) {
-    // If there is no data or there is an array but it's empty, return error.
-    this._data = data;
-    let markup = this._generateMarkup(data);
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
@@ -74,6 +83,7 @@ export default class View {
           <p>${message}</p>
         </div>
         `;
+    this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
   _clearThenInsert = function (markup, element, position) {

@@ -5,6 +5,15 @@ class ViewPreview extends View {
   _parentElement = "";
 
   generateMarkup(data) {
+    /* 
+      These nullish coalescents are because the return from model.loadSearchResultsPage() is different.
+      In hindsight, it should of been kept the same,
+      and the resetting of clicks should of been done external to this function.
+      There is no reason to include clicks = 0 as a return from that function.
+      Functions having single function > convenience.
+      Ultimately, this cause major issues with reusability and cohesion.
+      The nullish coalescents provide a hot patch.
+     */
     data = data ?? this._data;
     // Load pageItems & clicks or array
     let clicks = data.stateClicks ?? 0;
@@ -24,7 +33,7 @@ class ViewPreview extends View {
             <div class="preview__data">
                 <h4 class="preview__title">${result.title}</h4>
                 <p class="preview__publisher">${result.publisher}</p>
-                <div class="preview__user-generated">
+                <div class="preview__user-generated ${result.key ? "" : "hidden"}">
                 <svg>
                     <use href="${this.icons}#icon-user"></use>
                 </svg>
