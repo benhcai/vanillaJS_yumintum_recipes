@@ -3,8 +3,7 @@ import { Fraction } from "fractional";
 
 class ViewRecipe extends View {
   _parentElement = document.querySelector(".recipe");
-  _errorMessage =
-    "The recipe was not found. It may have been moved or deleted, please try a different URL address.";
+  _errorMessage = "Choose or search for a recipe to get ingredients and cooking instructions.";
   _successMessage = "success!";
 
   // R2. Publish: hashchange occured or load occured event.
@@ -36,6 +35,8 @@ class ViewRecipe extends View {
   // R6. Render document (markup) inside this view component
   // inherited render(data) from View
   _generateMarkup() {
+    console.log("generatemarkup", this._data);
+    console.log(this._data.key);
     return `
     <figure class="recipe__fig">
       <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
@@ -78,12 +79,10 @@ class ViewRecipe extends View {
       </div>
 
       
-      <div class="recipe__user-generated">
-      <!--
+      <div class="recipe__user-generated ${this._data.key ? "" : "hidden"}">
         <svg>
           <use href="${this.icons}#icon-user"></use>
         </svg>
-        -->
       </div>
       <button class="btn--round btn--bookmark">
         <svg class="">

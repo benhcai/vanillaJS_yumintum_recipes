@@ -6,6 +6,25 @@ export default class View {
   _data;
   clicks;
 
+<<<<<<< HEAD
+=======
+  /**
+   *  Render the recieved object to the DOM
+   * @param {Object | Object[]} data The data to be rendered
+   * @param (boolean) [render=true] If false, create markup string instad of rendering to the DOM
+   * @returns {undefined | string}
+   * @this {Object} View instance
+   * @author Benjamin Cai
+   * @todo Wait for API to enable searching user uploaded recipes
+   */
+  render(data) {
+    // If there is no data or there is an array but it's empty, return error.
+    this._data = data;
+    let markup = this._generateMarkup(data);
+    this._clearThenInsert(markup, this._parentElement, "afterbegin");
+  }
+
+>>>>>>> develop
   renderSpinner() {
     const markup = `
         <div class="spinner">
@@ -18,32 +37,25 @@ export default class View {
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
-  render(data) {
-    // If there is no data or there is an array but it's empty, return error.
-    this._data = data;
-    let markup = this._generateMarkup();
-    this._clearThenInsert(markup, this._parentElement, "afterbegin");
-  }
-
   update(data) {
     this._data = data;
-    let newMarkup = this._generateMarkup();
+    let newMarkup = this._generateMarkup(data);
 
     // String -> Markup object. Virtual DOM living in memory.
     const newDom = document.createRange().createContextualFragment(newMarkup);
     const newElements = Array.from(newDom.querySelectorAll("*"));
     const curElements = Array.from(this._parentElement.querySelectorAll("*"));
+    // console.log("curEl", curNodes);
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 
       // For elements whose TEXT have change, replace text.
-      if (!newEl.isEqualNode(curEl) && newEl?.firstChild.nodeValue.trim() !== "") {
+      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") {
         curEl.textContent = newEl.textContent;
       }
 
       // Append elements that have changed with ATTRIBUTES.
       if (!newEl.isEqualNode(curEl)) {
-        console.log("newelAttrib", newEl.attributes);
         Array.from(newEl.attributes).forEach((attr) => curEl.setAttribute(attr.name, attr.value));
       }
     });
@@ -74,6 +86,7 @@ export default class View {
           <p>${message}</p>
         </div>
         `;
+    this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
   _clearThenInsert = function (markup, element, position) {

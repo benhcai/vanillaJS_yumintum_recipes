@@ -1,5 +1,5 @@
 import { API_URL, API_KEY, RESULTS_PER_PAGE } from "./config";
-import { getJSON } from "./helper";
+import { AJAX, getJSON, sendJSON } from "./helper";
 
 export const state = {
   myrecipe: {},
@@ -17,7 +17,7 @@ export const state = {
 export const getRecipe = async function (id) {
   try {
     // Fetch recipes based on url function parameter
-    const data = await getJSON(`${API_URL}/${id}`);
+    const data = await AJAX(`${API_URL}/${id}?key=${API_KEY}`);
     const dataParsed = data.data.recipe;
     // Create new object with new keys
     state.myrecipe = {
@@ -29,6 +29,7 @@ export const getRecipe = async function (id) {
       ingredients: dataParsed.ingredients,
       servings: dataParsed.servings,
       cookingTime: dataParsed.cooking_time,
+      ...(dataParsed.key && { key: dataParsed.key }),
     };
 
     // Loop over the bookmarks array, if any of them equal the passed in id, then set the value for myrecipe.bookmark
@@ -48,7 +49,7 @@ export const loadSearchResults = async function (query) {
     state.search.page = 1;
     state.search.query = query;
 
-    const result = await getJSON(`${API_URL}?search=${query}`);
+    const result = await AJAX(`${API_URL}?search=${query}?key=${API_KEY}`);
     const recipesParsed = result.data.recipes;
     state.search.results = recipesParsed.map((recipe) => {
       return {
@@ -79,15 +80,17 @@ export const updateServings = function (newServings) {
   state.myrecipe.servings = Number(newServings);
 };
 
+const persistBookmarks = function () {
+  localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+};
+
 // Adding something: parameter is the whole data
 export const addBookmark = function (recipe) {
   // Mark current recipe as bookmarked
   state.myrecipe.bookmark = true;
-
   // Add bookmark
   state.bookmarks.push(recipe);
-  console.log("bookmarks", state.bookmarks);
-  console.log(state.myrecipe.bookmark);
+  persistBookmarks();
 };
 
 // Removing something: parameter is only the id
@@ -95,4 +98,72 @@ export const removeBookmark = function (id) {
   state.myrecipe.bookmark = false;
   const index = state.bookmarks.findIndex((el) => el.id === id);
   state.bookmarks.splice(index, 1);
+  persistBookmarks();
+};
+
+export const loadBookmarksFromLocalStorage = function () {
+  const storedBookmarks = localStorage.getItem("bookmarks");
+  if (storedBookmarks) state.bookmarks = JSON.parse(storedBookmarks);
+  console.log("localbookmark", state.bookmarks, JSON.parse(storedBookmarks));
+};
+
+loadBookmarksFromLocalStorage();
+
+// Not invoked as its only for dev work
+const clearBookmarks = function () {
+  localStorage.clear("bookmarks");
+};
+
+export const uploadRecipe = async function (newRecipe) {
+  // Obj -> array
+  try {
+    const ingredients = Object.entries(newRecipe)
+      .filter((entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
+      .map((ing) => {
+        // Destructure array of values (length = 3)
+        const ingArr = ing[1].replaceAll(" ", "").split(",");
+        // Handle the format of the input. Three components split by 2 commas is required
+        if (ingArr.length !== 3)
+          throw new Error(
+            "Incorrect ingredients format! Please use (note the commas): QUANTITY, UNIT, INGREDIENT. If you would like to skip a component, just leave a comma (,) in its place. Example: ,,salt."
+          );
+        const [quantity, unit, description] = ingArr;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+
+    const recipe = {
+      title: newRecipe.title,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      publisher: newRecipe.publisher,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      ingredients,
+    };
+
+    const response = await AJAX(`${API_URL}?key=${API_KEY}`, recipe);
+    state.myrecipe = createRecipeObject(response);
+    addBookmark(state.myrecipe);
+    return state.myrecipe;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const createRecipeObject = function (data) {
+  const dataParsed = data.data.recipe;
+  console.log("dataparsed", dataParsed);
+  recipeObject = {
+    id: dataParsed.id,
+    title: dataParsed.title,
+    sourceUrl: dataParsed.source_url,
+    image: dataParsed.image_url,
+    publisher: dataParsed.publisher,
+    cookingTime: +dataParsed.cooking_time,
+    servings: +dataParsed.servings,
+    ingredients: dataParsed.ingredients,
+    // If recipe.key is truthy, the && will short circuit to the right site.
+    ...(dataParsed.key && { key: dataParsed.key }),
+  };
+  return recipeObject;
 };
