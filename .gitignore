@@ -1,4 +1,6 @@
 node_modules
 dist
-.DS_Store
+forkify.code-workspace
 .parcel-cache
+.vscode
+.DS_Store
