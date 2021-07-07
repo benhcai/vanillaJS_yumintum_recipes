@@ -6,8 +6,6 @@ export default class View {
   _data;
   clicks;
 
-<<<<<<< HEAD
-=======
   /**
    *  Render the recieved object to the DOM
    * @param {Object | Object[]} data The data to be rendered
@@ -24,7 +22,6 @@ export default class View {
     this._clearThenInsert(markup, this._parentElement, "afterbegin");
   }
 
->>>>>>> develop
   renderSpinner() {
     const markup = `
         <div class="spinner">
