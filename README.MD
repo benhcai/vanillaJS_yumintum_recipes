@@ -1,8 +1,6 @@
-## yum in tum | vanilla JavaScript, HTML, SCSS recipes SPA
+## yum in tum || Vanilla JavaScript, HTML, SCSS recipes SPA
 
-![yum in tum website](/src/img/screenshot.png)
-
-![Alt text](relative/path/to/img.jpg?raw=true "Title")
+![yum in tum website](/src/img/screenshot.png?raw=true "screenshot")
 
 Demo: https://yumintum.netlify.app/
 
