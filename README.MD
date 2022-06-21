@@ -1,5 +1,5 @@
-# yum in tum
-## Vanilla JavaScript, HTML, SCSS, RWD, recipes SPA
+# yum in tum || recipes application
+## Vanilla JavaScript, HTML, SCSS, RWD, SPA
 
 ![yum in tum website](/src/img/screenshot.png?raw=true "screenshot")
 
