@@ -1,6 +1,8 @@
 ## yum in the tum
 
-![yum in tum website](http://url/to/img.png)
+![yum in tum website](/src/img/screenshot.png)
+
+![Alt text](relative/path/to/img.jpg?raw=true "Title")
 
 Demo: https://yumintum.netlify.app/
 
