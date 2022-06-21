@@ -2,42 +2,42 @@ import View from "./View";
 import { Fraction } from "fractional";
 
 class ViewRecipe extends View {
-  _parentElement = document.querySelector(".recipe");
-  _errorMessage = "Choose or search for a recipe to get ingredients and cooking instructions.";
-  _successMessage = "success!";
+    _parentElement = document.querySelector(".recipe");
+    _errorMessage = "Choose or search for a recipe to get ingredients and cooking instructions.";
+    _successMessage = "success!";
 
-  // R2. Publish: hashchange occured or load occured event.
-  addHandlerRender(handler) {
-    ["hashchange", "load"].forEach((ev) => {
-      return window.addEventListener(ev, handler);
-    });
-  }
+    // R2. Publish: hashchange occured or load occured event.
+    addHandlerRender(handler) {
+        ["hashchange", "load"].forEach((ev) => {
+            return window.addEventListener(ev, handler);
+        });
+    }
 
-  addHandlerUpdateServings(handler) {
-    this._parentElement.addEventListener("click", function (e) {
-      const btn = e.target.closest(".btn--update-servings");
-      if (!btn) return;
-      const { updateTo } = btn.dataset;
-      if (+updateTo > 0) handler(+updateTo);
-    });
-  }
+    addHandlerUpdateServings(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn--update-servings");
+            if (!btn) return;
+            const { updateTo } = btn.dataset;
+            if (+updateTo > 0) handler(+updateTo);
+        });
+    }
 
-  addHandlerClickBookmark(handler) {
-    // When this is ran, the btn--bookmark element does not exist so we need to attatch listener to parent
-    this._parentElement.addEventListener("click", function (e) {
-      const btn = e.target.closest(".btn--bookmark");
-      if (!btn) return;
+    addHandlerClickBookmark(handler) {
+        // When this is ran, the btn--bookmark element does not exist so we need to attatch listener to parent
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn--bookmark");
+            if (!btn) return;
 
-      handler();
-    });
-  }
+            handler();
+        });
+    }
 
-  // R6. Render document (markup) inside this view component
-  // inherited render(data) from View
-  _generateMarkup() {
-    console.log("generatemarkup", this._data);
-    console.log(this._data.key);
-    return `
+    // R6. Render document (markup) inside this view component
+    // inherited render(data) from View
+    _generateMarkup() {
+        console.log("generatemarkup", this._data);
+        console.log(this._data.key);
+        return `
     <figure class="recipe__fig">
       <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
       <h1 class="recipe__title">
@@ -92,7 +92,7 @@ class ViewRecipe extends View {
     </div>
 
     <div class="recipe__ingredients">
-        <h2 class="heading--2">RecipeView ingredients}</h2>
+        <h2 class="heading--2">Ingredients</h2>
         <ul class="recipe__ingredient-list">
         ${this._data.ingredients.map((ing) => this._generateIngredients(ing)).join("")}
         </ul>
@@ -117,10 +117,10 @@ class ViewRecipe extends View {
       </a>
     </div>
     `;
-  }
+    }
 
-  _generateIngredients(ing) {
-    return `
+    _generateIngredients(ing) {
+        return `
       <li class="recipe__ingredient">
       <svg class="recipe__icon">
           <use href="${this.icons}#icon-check"></use>
@@ -134,7 +134,7 @@ class ViewRecipe extends View {
       </div>
       </li>
       `;
-  }
+    }
 }
 
 export default new ViewRecipe();
